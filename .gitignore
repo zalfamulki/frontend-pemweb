@@ -40,7 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-
-
+REALTIME_GAME_DOCS.md
+secret.txt
 AGENTS.md
 CLAUDE.md
+truth-or-trap-game-flow-v2.md

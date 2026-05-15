@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { AppProviders } from "@/contexts/AppProviders";
 
 export const metadata: Metadata = {
-  title: "Truth or Trap — Fake News Detection Game",
+  title: "Truth or Trap - Interactive Story Game",
   description:
-    "Interactive multiplayer game where you detect fake news, discuss in realtime, and build your digital literacy. Can you tell Truth from Trap?",
-  keywords: ["fake news", "game", "education", "digital literacy", "Indonesia"],
+    "Game interactive storytelling multiplayer dengan chat real-time, voting, timer, leaderboard, dan multiple ending.",
+  keywords: ["interactive storytelling", "multiplayer", "websocket", "game", "Indonesia"],
   authors: [{ name: "Truth or Trap Team" }],
   openGraph: {
     title: "Truth or Trap",
-    description: "Can you detect fake news in realtime?",
+    description: "Ambil keputusan bersama dan tentukan ending cerita.",
     type: "website",
   },
 };
@@ -18,20 +19,21 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body className="bg-mesh">
-        {children}
+      <body>
+        <AppProviders>{children}</AppProviders>
         <Toaster
           position="top-right"
           toastOptions={{
             style: {
-              background: "#16161f",
-              color: "#e8e8f0",
-              border: "1px solid #ffffff20",
-              borderRadius: "12px",
-              fontSize: "0.875rem",
+              background: "#fffdf2",
+              color: "#111111",
+              border: "3px solid #111111",
+              borderRadius: "8px",
+              boxShadow: "4px 4px 0 #111111",
+              fontWeight: 800,
             },
-            success: { iconTheme: { primary: "#00b894", secondary: "#16161f" } },
-            error:   { iconTheme: { primary: "#e74c3c", secondary: "#16161f" } },
+            success: { iconTheme: { primary: "#47d16c", secondary: "#111111" } },
+            error: { iconTheme: { primary: "#ef2d56", secondary: "#111111" } },
           }}
         />
       </body>

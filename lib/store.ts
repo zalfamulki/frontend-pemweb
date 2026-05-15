@@ -3,7 +3,7 @@ import { authAPI } from './api';
 import { initSocket, disconnectSocket } from './socket';
 import type { User, AuthState } from './types';
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
   isAuthenticated: false,

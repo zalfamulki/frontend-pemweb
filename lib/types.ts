@@ -50,6 +50,7 @@ export interface Room {
 // ── Message ──────────────────────────────────────────────────
 export interface Message {
   id?: number;
+  clientMessageId?: string | null;
   roomId?: number;
   userId?: number;
   username?: string;
@@ -90,6 +91,77 @@ export interface RoomScore {
   room_points: number;
   correct_votes: number;
   total_votes: number;
+}
+
+export interface ScenarioChoice {
+  id: number;
+  scenario_id: number;
+  text: string;
+  next_scenario_id?: number | null;
+}
+
+export interface Scenario {
+  id: number;
+  title: string;
+  content: string;
+  image_url?: string | null;
+  is_start: number;
+  is_end: number;
+  choices: ScenarioChoice[];
+}
+
+export interface RoomMember {
+  id: number;
+  username: string;
+  avatar?: string;
+  trust_score: number;
+  reputation: number;
+  is_online?: number;
+  is_ready?: number;
+  joined_at?: string;
+}
+
+export interface VoteBreakdown {
+  choiceId: number;
+  text: string;
+  count: number;
+  isWinner: boolean;
+}
+
+export type GamePhase =
+  | 'waiting'
+  | 'story_intro'
+  | 'discussion_phase'
+  | 'voting_phase'
+  | 'result_phase'
+  | 'ended'
+  | 'voting'
+  | 'result';
+
+export interface SerializedVotes {
+  byUser: Record<string, number>;
+  tally: Record<string, number>;
+}
+
+export interface StoryState {
+  roomId: number;
+  phase: GamePhase;
+  scenario: Scenario | null;
+  timer: number;
+  members: RoomMember[];
+  hostId: number | null;
+  ready: Record<string, boolean>;
+  votes: SerializedVotes;
+  myVote?: number | null;
+  lastResult?: {
+    roomId: number;
+    scenarioId: number;
+    winnerChoiceId: number;
+    winnerText: string;
+    breakdown: VoteBreakdown[];
+  } | null;
+  ending?: Scenario | null;
+  startedAt?: string | null;
 }
 
 // ── API Response ─────────────────────────────────────────────

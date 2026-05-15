@@ -1,8 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { LogIn } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
 
 export default function LoginPage() {
@@ -11,22 +13,17 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    initAuth();
-  }, [initAuth]);
-
-  useEffect(() => {
-    if (isAuthenticated) router.replace("/dashboard");
-  }, [isAuthenticated, router]);
+  useEffect(() => { initAuth(); }, [initAuth]);
+  useEffect(() => { if (isAuthenticated) router.replace("/lobby"); }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.email || !form.password) return toast.error("Semua field wajib diisi");
+    if (!form.email || !form.password) return toast.error("Email dan password wajib diisi");
     setLoading(true);
     try {
       await login(form.email, form.password);
-      toast.success("Selamat datang kembali! 🎉");
-      router.push("/dashboard");
+      toast.success("Login berhasil");
+      router.push("/lobby");
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || "Login gagal";
       toast.error(msg);
@@ -36,87 +33,30 @@ export default function LoginPage() {
   };
 
   return (
-    <main style={{
-      minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-      padding: "2rem",
-      background: "radial-gradient(ellipse at 30% 50%, rgba(108,92,231,0.12) 0%, transparent 60%), var(--c-bg)"
-    }}>
-      <div className="animate-fadeInUp" style={{ width: "100%", maxWidth: "420px" }}>
-        {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <Link href="/" style={{ textDecoration: "none" }}>
-            <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 900, fontSize: "2rem" }}>
-              <span className="gradient-text">Truth</span>
-              <span style={{ color: "var(--c-muted)", fontSize: "1.5rem" }}> or </span>
-              <span className="gradient-text-danger">Trap</span>
-            </span>
-          </Link>
-          <p style={{ color: "var(--c-muted)", marginTop: "0.5rem", fontSize: "0.9rem" }}>
-            Masuk dan buktikan literasi digitalmu
-          </p>
-        </div>
+    <main className="page-shell" style={{ display: "grid", placeItems: "center" }}>
+      <section className="neo-card" style={{ width: "min(440px,100%)", padding: 24, background: "var(--c-pink)" }}>
+        <Link href="/" className="brand-font" style={{ fontSize: 24, textDecoration: "none" }}>TRUTH OR TRAP</Link>
+        <h1 className="brand-font" style={{ fontSize: 42, margin: "18px 0 6px" }}>LOGIN</h1>
+        <p style={{ marginTop: 0, fontWeight: 800 }}>Masuk ke lobby dan lanjutkan sesi cerita tim.</p>
 
-        <div className="glass" style={{ padding: "2rem" }}>
-          <h1 style={{ fontWeight: 700, fontSize: "1.4rem", marginBottom: "1.5rem", textAlign: "center" }}>
-            Login
-          </h1>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div>
-              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 500, color: "var(--c-muted)", marginBottom: "0.4rem" }}>
-                Email
-              </label>
-              <input
-                id="login-email"
-                type="email"
-                className="input"
-                placeholder="kamu@email.com"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                autoComplete="email"
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 500, color: "var(--c-muted)", marginBottom: "0.4rem" }}>
-                Password
-              </label>
-              <input
-                id="login-password"
-                type="password"
-                className="input"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                autoComplete="current-password"
-              />
-            </div>
-            <button
-              id="login-submit"
-              type="submit"
-              className="btn btn-primary"
-              style={{ marginTop: "0.5rem", width: "100%", padding: "0.875rem" }}
-              disabled={loading}
-            >
-              {loading ? "⏳ Masuk..." : "🔐 Login"}
-            </button>
-          </form>
-
-          <div style={{ textAlign: "center", marginTop: "1.5rem", fontSize: "0.875rem", color: "var(--c-muted)" }}>
-            Belum punya akun?{" "}
-            <Link href="/register" style={{ color: "var(--c-primary-l)", fontWeight: 600, textDecoration: "none" }}>
-              Daftar sekarang
-            </Link>
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14, marginTop: 22 }}>
+          <div>
+            <label className="label">Email</label>
+            <input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} autoComplete="email" />
           </div>
-        </div>
+          <div>
+            <label className="label">Password</label>
+            <input className="input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="current-password" />
+          </div>
+          <button className="btn btn-primary" disabled={loading} type="submit">
+            <LogIn size={18} /> {loading ? "Masuk..." : "Login"}
+          </button>
+        </form>
 
-        {/* Demo hint */}
-        <div style={{
-          marginTop: "1rem", padding: "0.75rem 1rem", borderRadius: "10px",
-          background: "rgba(108,92,231,0.1)", border: "1px solid rgba(108,92,231,0.2)",
-          fontSize: "0.8rem", color: "var(--c-muted)", textAlign: "center"
-        }}>
-          🔑 Admin demo: <strong style={{ color: "var(--c-primary-l)" }}>admin@truthortrap.id</strong> / <strong style={{ color: "var(--c-primary-l)" }}>Admin@1234</strong>
-        </div>
-      </div>
+        <p style={{ fontWeight: 800, textAlign: "center", marginBottom: 0 }}>
+          Belum punya akun? <Link href="/register">Daftar</Link>
+        </p>
+      </section>
     </main>
   );
 }
