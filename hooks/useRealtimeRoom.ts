@@ -85,8 +85,15 @@ export function useRealtimeRoom(roomId: number, userId?: number) {
       setRoom((prev) => payload.hostId && prev ? { ...prev, host_id: payload.hostId, status: payload.phase === "waiting" ? "waiting" : payload.phase === "ended" ? "closed" : "active" } : prev);
     };
 
-    const onMessage = (message: Message) => {
-      if (message.roomId === roomId) addMessage(message);
+    const onMessage = (message: Message & { user_id?: number; message_type?: Message["messageType"]; created_at?: string }) => {
+      if (message.roomId === roomId) {
+        addMessage({
+          ...message,
+          userId: message.userId || message.user_id,
+          messageType: message.messageType || message.message_type,
+          timestamp: message.timestamp || message.created_at,
+        });
+      }
     };
     const onTyping = (payload: { roomId: number; userId: number; username: string; isTyping: boolean }) => {
       if (payload.roomId !== roomId || payload.userId === userId) return;
